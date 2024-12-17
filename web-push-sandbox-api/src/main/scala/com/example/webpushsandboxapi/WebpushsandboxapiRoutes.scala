@@ -16,7 +16,7 @@ object WebpushsandboxapiRoutes:
     val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
-      case GET -> Root / "joke" => {
+      case GET -> Root / "push/notification" => {
 
         Security.addProvider(new BouncyCastleProvider())
 
