@@ -15,53 +15,48 @@ object WebpushsandboxapiRoutes:
   def webPushRoutes[F[_]: Sync](): HttpRoutes[F] =
     val dsl = new Http4sDsl[F] {}
     import dsl._
-    HttpRoutes.of[F] {
-      case GET -> Root / "push/notification" => {
+    HttpRoutes.of[F] { case GET -> Root / "push/notification" =>
+      Security.addProvider(new BouncyCastleProvider())
 
-        Security.addProvider(new BouncyCastleProvider())
+      val publicKeyStr  = ""
+      val privateKeyStr = ""
 
-        val publicKeyStr  = ""
-        val privateKeyStr = ""
+      val publicKey  = Utils.loadPublicKey(publicKeyStr)
+      val privateKey = Utils.loadPrivateKey(privateKeyStr)
 
-        val publicKey  = Utils.loadPublicKey(publicKeyStr)
-        val privateKey = Utils.loadPrivateKey(privateKeyStr)
+      val keyPair = KeyPair(
+        publicKey,
+        privateKey
+      )
 
-        val keyPair = KeyPair(
-          publicKey,
-          privateKey
+      val endpoint = ""
+      val p256dh   = ""
+      val auth     = ""
+
+      val subscription = new Subscription(
+        endpoint,
+        Keys(
+          p256dh,
+          auth
         )
+      )
 
-        val endpoint = ""
-        val p256dh   = ""
-        val auth     = ""
+      val notification = new Notification(
+        subscription,
+        """{"title": "Hello"}"""
+      )
 
-        val subscription = new Subscription(
-          endpoint,
-          Keys(
-            p256dh,
-            auth
-          )
-        )
+      val pushService = new PushService(keyPair)
 
-        val notification = new Notification(
-          subscription,
-          """{"title": "Hello"}"""
-        )
-
-        val pushService = new PushService(keyPair)
-
-        try {
-          val result = pushService.send(notification)
-          println(s"result: $result")
-        } catch {
-          case e: Exception => println(s"error: $e")
-        }
-
-        for {
-          joke <- J.get
-          resp <- Ok(joke)
-        } yield resp
+      try {
+        val result = pushService.send(notification)
+        println(s"result: $result")
+      } catch {
+        case e: Exception => println(s"error: $e")
       }
+
+      Ok()
+
     }
 
   def helloWorldRoutes[F[_]: Sync](H: HelloWorld[F]): HttpRoutes[F] =
