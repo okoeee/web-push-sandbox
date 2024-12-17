@@ -22,7 +22,7 @@ object WebpushsandboxapiServer:
       // in the underlying routes.
       httpApp      = (
                        WebpushsandboxapiRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
-                         WebpushsandboxapiRoutes.jokeRoutes[F](jokeAlg)
+                         WebpushsandboxapiRoutes.webPushRoutes[F]()
                      ).orNotFound
 
       // With Middlewares in place

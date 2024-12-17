@@ -12,7 +12,7 @@ import java.security.{KeyPair, Security}
 
 object WebpushsandboxapiRoutes:
 
-  def jokeRoutes[F[_]: Sync](J: Jokes[F]): HttpRoutes[F] =
+  def webPushRoutes[F[_]: Sync](): HttpRoutes[F] =
     val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
